@@ -1,6 +1,6 @@
 ---
-clusterName: "opensearch-cluster"
-nodeGroup: "client"
+clusterName: "opensearch-cluster-separate"
+nodeGroup: "master"
 
 # If discovery.type in the opensearch configuration is set to "single-node",
 # this should be set to "true"
@@ -9,11 +9,12 @@ singleNode: false
 
 # The service that non master groups will try to connect to when joining the cluster
 # This should be set to clusterName + "-" + nodeGroup for your master group
-masterService: "opensearch-cluster-master"
+masterService: "opensearch-cluster-separate-master"
 
 # OpenSearch roles that will be applied to this nodeGroup
 # These will be set as environment variable "node.roles". E.g. node.roles=master,ingest,data,remote_cluster_client
 roles:
+  - master
 
 replicas: 1
 
@@ -42,7 +43,7 @@ config:
   #   rootLogger.level = info
   #   rootLogger.appenderRef.console.ref = console
   opensearch.yml: |
-    cluster.name: opensearch-cluster
+    cluster.name: opensearch-cluster-separate
 
     # Bind to all interfaces because we don't know what IP address Docker will assign to us.
     network.host: 0.0.0.0
@@ -184,11 +185,13 @@ persistence:
   enabled: false
 
 extraVolumes:
-  - name: opensearch-data-1
+  - name: opensearch-master-data-1
+  #   emptyDir: {}
 
 extraVolumeMounts:
-  - name: opensearch-data-1
+  - name: opensearch-master-data-1
     mountPath: /usr/share/opensearch/data
+  #   readOnly: true
 
 extraContainers: []
   # - name: do-something

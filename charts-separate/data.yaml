@@ -1,5 +1,5 @@
 ---
-clusterName: "opensearch-cluster"
+clusterName: "opensearch-cluster-separate"
 nodeGroup: "data"
 
 # If discovery.type in the opensearch configuration is set to "single-node",
@@ -9,7 +9,7 @@ singleNode: false
 
 # The service that non master groups will try to connect to when joining the cluster
 # This should be set to clusterName + "-" + nodeGroup for your master group
-masterService: "opensearch-cluster-master"
+masterService: "opensearch-cluster-separate-master"
 
 # OpenSearch roles that will be applied to this nodeGroup
 # These will be set as environment variable "node.roles". E.g. node.roles=master,ingest,data,remote_cluster_client
@@ -17,7 +17,7 @@ roles:
   - data
   - ingest
 
-replicas: 1
+replicas: 3
 
 # if not set, falls back to parsing .Values.imageTag, then .Chart.appVersion.
 majorVersion: ""
@@ -44,7 +44,7 @@ config:
   #   rootLogger.level = info
   #   rootLogger.appenderRef.console.ref = console
   opensearch.yml: |
-    cluster.name: opensearch-cluster
+    cluster.name: opensearch-cluster-separate
 
     # Bind to all interfaces because we don't know what IP address Docker will assign to us.
     network.host: 0.0.0.0
